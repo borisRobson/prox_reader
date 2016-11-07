@@ -61,14 +61,24 @@ while i != len(data):
 		out = (out << 1) | data_byte[index-1]
 		index -= 1	
 	
-#	print out
-#	print data_byte
-
 	i += byte_len
 	reader_value.append(out)
 
 print reader_value
+reader_index = 0
+stx = 0
+etx = 0
 
+while reader_index != len(reader_value):
+	if reader_value[reader_index] == 11:
+		stx = reader_index + 1
+	elif reader_value[reader_index] == 15:
+		etx = reader_index 
+	reader_index += 1
+
+print etx
+print stx
+		
 def on_connect(mosq, obj, rc):
 	print "connected to mqtt broker"
 
@@ -82,7 +92,9 @@ mqttc.on_connect = on_connect
 
 mqttc.connect(MQTT_HOST, MQTT_PORT, MQTT_KEEPALIVE_INTERVAL)
 
-msg = ','.join(str(x) for x in  reader_value)
+msg = ''.join(str(x) for x in  reader_value[stx:etx])
+
+print msg
 
 mqttc.publish(MQTT_TOPIC, msg)
 
