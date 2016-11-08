@@ -1,7 +1,7 @@
 import paho.mqtt.client as mqtt
 import json
 from datetime import datetime
-
+import sys
 
 MQTT_HOST = "10.10.40.118"
 MQTT_PORT = 1883
@@ -23,24 +23,27 @@ def check_data():
 		rectime = fullrectime[6:]
 		diff = float(rectime) - float(msgtime)
 		id = val['id']		
-		print("msgId: " + str(id) +  ",msgtime : " + str(msgtime)+ ",rectime: " + str(rectime))
-		print("diff: " + str(diff))
+#		print("msgId: " + str(id) +  ",msgtime : " + str(msgtime)+ ",rectime: " + str(rectime))
+#		print("diff: " + str(diff))
+		print(str(id)+","+ str(msgtime)+","+ str(rectime)+ ","+str(diff)) 
 		i += 1
+	print sys.getsizeof(data[i])
 	mqttc.loop_stop()
 		
 def on_connect(mosq, obj, rc):
-	print "Connected to broker"
+#	print "Connected to broker"
 	mqttc.subscribe(MQTT_TOPIC, 0)
 
 def on_subscribe(mosq, obj, mid, granted_qos):
-	print "Subscribed to topic"
+#	print "Subscribed to topic"
+	print("msgId, sent Time, Rec Time, Diff")
 
 
 def on_message(mosq, obj, msg):
 	data.append(str(msg.payload))
 	rectimes.append(datetime.now().time())
 	i = len(data)
-	if(i == 2500):
+	if(i == 60000):
 		check_data()
 
 mqttc = mqtt.Client()
