@@ -33,16 +33,22 @@ mqttc.connect(MQTT_HOST, MQTT_PORT, MQTT_KEEPALIVE_INTERVAL)
 mqttc.loop_start()
 
 i = 0
-while i < 2501:
+now = datetime.now().time()
+while i < 60001:
 #	global json_string
 #	json_string = '{"uid":num,"id":str(i)}'
-	json_string = '{"uid":"' + num + '","id":"' + str(i) + '","time":"' + str(datetime.now().time()) + '" }'
+	json_string = '{"uid":"' + num +num+ '","id":"' + str(i) + '","time":"' + str(datetime.now().time()) + '" }'
 #	print json_string
 	do_publish(json_string)
+	if i == 1:
+		print json_string
 	i += 1
-	sleep (0.002)
+	sleep (0.001)
 
 print "done"
+fin = datetime.now().time()
+print("started @ "+ str(now) + " , sent " + str(i) + " messages.")
+print("finish time: " + str(fin))
 mqttc.disconnect()
 	
 
