@@ -22,6 +22,8 @@ def check_data():
 		fullrectime = str(rectimes[i])
 		rectime = fullrectime[6:]
 		diff = float(rectime) - float(msgtime)
+		if diff < 0:
+			diff += 60.0
 		id = val['id']		
 #		print("msgId: " + str(id) +  ",msgtime : " + str(msgtime)+ ",rectime: " + str(rectime))
 #		print("diff: " + str(diff))
@@ -43,7 +45,7 @@ def on_message(mosq, obj, msg):
 	data.append(str(msg.payload))
 	rectimes.append(datetime.now().time())
 	i = len(data)
-	if(i == 60000):
+	if(i == 600000):
 		check_data()
 
 mqttc = mqtt.Client()

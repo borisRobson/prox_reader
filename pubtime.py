@@ -34,7 +34,7 @@ mqttc.loop_start()
 
 i = 0
 now = datetime.now().time()
-while i < 60001:
+while i < 600001:
 #	global json_string
 #	json_string = '{"uid":num,"id":str(i)}'
 	json_string = '{"uid":"' + num +num+ '","id":"' + str(i) + '","time":"' + str(datetime.now().time()) + '" }'
