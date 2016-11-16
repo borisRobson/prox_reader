@@ -45,7 +45,8 @@ def create_msg(msg_id):
 	msg = {
 		'sent_time':'{0}'.format(time),
 		'src': '{0}'.format(DEVICE_ID),
-		'msg_id':'{0}'.format(str(msg_id))
+		'msg_id':'{0}'.format(str(msg_id)),
+		'rec_time':' '
 		}
 	json_msg = json.dumps(msg)
 	return json_msg
@@ -66,13 +67,13 @@ if __name__=="__main__":
 	init()
 	start = datetime.now().time()
 	print "Starting at {0}".format(str(start))
-	signal.alarm(1)
+	signal.alarm(600)
 	try:
 		while 1:
 			msg_loop()
 	except Exception,exc:
 		print "quitting"
-		publish_msg("/testfinished", DEVICE_ID)
+		mqttc.publish("/testfinished", DEVICE_ID)
 		print exc
 		mqttc.loop_stop()
 		sys.exit()
