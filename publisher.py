@@ -41,9 +41,12 @@ def handler(signum, frame):
 
 #method to create json payload
 def create_msg(msg_id):
-	time = datetime.now().time()
+	timestamp = str(datetime.now().time())
+	ms = timestamp[8:]
+	unix = int(time.time())
+	total = str(unix) + ms
 	msg = {
-		'sent_time':'{0}'.format(time),
+		'sent_time':'{0}'.format(total),
 		'src': '{0}'.format(DEVICE_ID),
 		'msg_id':'{0}'.format(str(msg_id)),
 		'rec_time':' '
