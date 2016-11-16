@@ -72,6 +72,7 @@ if __name__=="__main__":
 			msg_loop()
 	except Exception,exc:
 		print "quitting"
+		publish_msg("/testfinished", DEVICE_ID)
 		print exc
 		mqttc.loop_stop()
 		sys.exit()
