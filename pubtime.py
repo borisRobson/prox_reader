@@ -1,4 +1,5 @@
 import paho.mqtt.client as mqtt
+import sys
 from time import sleep
 from datetime import datetime
 import json
@@ -7,7 +8,7 @@ import uuid
 MQTT_HOST = "10.10.40.118"
 MQTT_PORT = 1883
 MQTT_KEEPALIVE_INTERVAL = 5
-MQTT_TOPIC = "testTopic"
+MQTT_TOPIC = "topic0"
 MQTT_MSG = ""
 MQTT_QOS = 1
 msg = ""
@@ -37,11 +38,13 @@ now = datetime.now().time()
 while i < 600001:
 #	global json_string
 #	json_string = '{"uid":num,"id":str(i)}'
-	json_string = '{"uid":"' + num +num+ '","id":"' + str(i) + '","time":"' + str(datetime.now().time()) + '" }'
+	json_string = '{"uid":"' + num + '","id":"' + str(i) + '","time":"' + str(datetime.now().time()) + '" }'
 #	print json_string
 	do_publish(json_string)
 	if i == 1:
 		print json_string
+		print sys.getsizeof(json_string)
+		
 	i += 1
 	sleep (0.001)
 
