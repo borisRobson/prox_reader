@@ -9,17 +9,30 @@ import paho.mqtt.client as mqtt
 DEVICE_ID = str(1)
 
 #define broker settings
-MQTT_HOST = 'm21.cloudmqtt.com'
-MQTT_PORT = 14408
+MQTT_HOST = "10.10.40.118"
+MQTT_PORT = 1883
 MQTT_USER = 'ziuhykxg'
 MQTT_PW = 'TjjJgbP0Ojuy'
 MQTT_TOPIC = "/test/datatest"
-MQTT_QOS = 1
+MQTT_QOS = 0
 MQTT_KEEPALIVE_INTERVAL = 5
+
+RATE = 2
+DURATION = 600
+TOTAL = RATE * DURATION
 
 #define mqtt callbacks
 def on_connect(mosq, obj, rc):
 	print ("Connected to broker: " +str(rc))
+	
+def on_publish(client, userdata,mid):
+	sent = int(mid)
+	if (sent == TOTAL):
+		print("sending finish")
+		mqttc.publish("/testfinished",DEVICE_ID,2)
+	if(sent == TOTAL + 1):
+		print("finishing")
+		signal.alarm(1)		
 
 def publish_msg(msg):
 	mqttc.publish(MQTT_TOPIC, msg, MQTT_QOS)
@@ -29,8 +42,9 @@ def init():
 	global mqttc
 	mqttc = mqtt.Client()
 	mqttc.on_connect = on_connect
+	mqttc.on_publish = on_publish
 	mqttc.username_pw_set(str(MQTT_USER), str(MQTT_PW))
-	mqttc.connect(str(MQTT_HOST), MQTT_PORT, MQTT_KEEPALIVE_INTERVAL)
+	mqttc.connect(MQTT_HOST, MQTT_PORT, MQTT_KEEPALIVE_INTERVAL)
 	mqttc.loop_start()
 
 #handler to exit loop
@@ -61,7 +75,7 @@ def msg_loop():
 		payload = create_msg(msg_id)
 		publish_msg(payload)
 		msg_id += 1
-		sleep(0.1)
+		sleep(0.5)
 
 signal.signal(signal.SIGALRM, handler)
 	
@@ -70,13 +84,12 @@ if __name__=="__main__":
 	init()
 	start = datetime.now().time()
 	print "Starting at {0}".format(str(start))
-	signal.alarm(600)
+#	signal.alarm(10)
 	try:
 		while 1:
 			msg_loop()
 	except Exception,exc:
-		print "quitting"
-		mqttc.publish("/testfinished", DEVICE_ID)
+#		mqttc.publish("/testfinished", DEVICE_ID,1)
 		print exc
 		mqttc.loop_stop()
 		sys.exit()
